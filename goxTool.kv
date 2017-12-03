@@ -1,0 +1,150 @@
+#: import main main
+#: import ListAdapter kivy.adapters.listadapter.ListAdapter
+
+RegistrationRoot  
+
+<RegistrationRoot>
+	twitter: twitter_input
+	secret_key: secret_key_input
+	hush_exam :hush_input
+
+    BoxLayout:
+        orientation: 'vertical'
+        BoxLayout:
+            canvas.before:
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+                Color:
+                    rgb: (1,1,1)
+            size_hint_y:1
+            Button:
+                text: '登録'
+                on_press: print("regist");app.root.regist_done()
+            Button:
+                text: 'クリア'
+                on_press: print("clear");app.root.clear_done()
+
+            Label:  # 余白を作るため
+                size_hint_x: 4
+
+        ScrollView:
+            size_hint_y: 9
+            do_scroll_x: False
+            bar_width: 10
+            bar_inactive_color:.7, .7, .7, 1
+            GridLayout:
+                cols: 1
+                size_hint_y: None
+                height: self.minimum_height
+                canvas:
+                    Color:
+                        rgba: (0, 0, 0, 1) 
+                    Rectangle:
+                        size: self.size
+                        pos: self.pos
+                        
+                Label:                
+                    text_size: self.width, None
+                    size_hint_y: None
+                    height: self.texture_size[1]
+
+                    text:
+                        """
+                        【送金GOX対応ツール】
+                        送金時にTagを入れ忘れてGOXしてしまった時に使用するツールです。
+
+                        ：手順
+                        １、Tipnemにログインし、Level1になります。
+                        ２、送金時に用いたアドレスの秘密鍵を取得します。
+                        ３、GOXしたtxhashを取得します。
+                        ４、署名を作成し秘密鍵を削除し送信します。(自動)
+                        ５、成功メッセージを確認します。
+                        """
+                Label:
+                    text_size: self.width, None
+                    size_hint_y: None
+                    height: self.texture_size[1]
+                    text:'Twitter名を入力しましょう。@example_name の場合は "example_name"と入力'
+
+                TextInput:
+                    id: twitter_input
+                    size_hint_y: None   
+                    size_hint_x: 8
+                    hint_text: 'twitter34a'
+                    
+                Label:
+                    text_size: self.width, None
+                    size_hint_y: None
+                    height: self.texture_size[1]
+
+                    text:
+                        """
+                        ２、秘密鍵を入力します。
+                        秘密鍵は他人に知られると残高を勝手に操作される可能性があります。
+                        取り扱いには十分注意して下さい！
+                        """
+                TextInput:
+                    id: secret_key_input
+                    size_hint_y: None   
+                    hint_text: '2fa58d280902095a28601840ff392381d5313716ef0dbf06beb202bc2a880f9b'
+
+                Label:
+                    text_size: self.width, None
+                    size_hint_y: None
+                    height: self.texture_size[1]
+                
+                    text:
+                        """
+                        ３、GOXしたtxhash(トランザクションハッシュ)を入力します。
+                        txhashの取得方法は、まずnanowalletのダッシュボードを開きます。
+                        次にGOXした送金をクリックし"ハッシュ"の右の16進数を探します。
+                        16進数とは 63f52c2998d2 のような0-9とa-fの文字で表された文字列です。
+                        長くて特徴的な見た目なのでわかりやすいと思います。
+                        """
+                TextInput:
+                    id: hush_input
+                    size_hint_y: None   
+                    hint_text: '63f52c2998d2'
+                    height: 50                         
+                        
+
+                Label: # 余白
+                    text_size: self.width, None
+                    size_hint_y: None
+                    height: self.texture_size[1]
+                
+                    text:"               "
+
+<MyPopup>:
+    message_output:confirm_text
+
+    title: 'result'
+    size_hint: None, None
+    size: 400, 400
+    
+    auto_dismiss: False
+    
+    BoxLayout:
+        orientation: 'vertical'
+        id: result_message
+        
+        Label:
+            font_size:18
+            text: 'hello world'
+            id: confirm_text
+        Button:
+            size_hint_y: None
+            height: 60
+            text: 'Close'
+            on_press: root.dismiss()
+            
+<Label>
+    font_size:15
+    
+<TextInput>
+    font_size:20
+    height: 50                       
+
+<Button>
+    font_size:15
