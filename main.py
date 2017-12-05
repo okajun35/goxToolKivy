@@ -15,6 +15,9 @@ from kivy.core.text import LabelBase, DEFAULT_FONT
 from kivy.resources import resource_add_path
 from kivy.uix.popup import Popup
 
+from tipnem import WebSocketClient
+from ed25519 import Ed25519
+
 # デフォルトに使用するフォントを変更する
 resource_add_path('./fonts')
 #resource_add_path('/storage/emulated/0/kivy/calc/fonts')
@@ -63,6 +66,53 @@ class RegistrationRoot(BoxLayout):
         print(self.tx_hash)
 
         # 処理部
+        ws = WebSocketClient(url="ws://153.122.86.46:8088")
+
+        ws.start()
+        ws.login_by_pin_guest(screen = self.ws)
+        
+        
+        sec_ley = sec_ley.lower().lstrip().rstrip()
+        if len(sec_ley) != 64:
+            #print("Error:正しい形式の秘密鍵ではありません。空白などが混在していませんか？")
+            errorcode = 1
+
+        if(errorcode == 0):
+            try:
+                int(sec_ley, 16)
+            except Exception as e:
+                #print("Error:%s" % e)
+                errorcode = 3
+
+
+        if(errorcode == 0):
+            print("４、署名を作成します。")
+            message = ws.user_code + tx_hash
+            ecc = Ed25519()
+            pub_key = ecc.public_key(sk=sec_ley).decode()
+            sign = Ed25519.sign(message=message, secret_key=sec_ley, public_key=pub_key).decode()
+
+            print("４、秘密鍵を削除します。")
+            del sec_ley
+            del ecc
+
+            data = {
+                'txhash': tx_hash,
+                'sign': sign,
+                'pubkey': pub_key
+            }
+            ok, result = ws.request(command="nem/lost", data=data)
+            if not ok:
+                errorcode = 4
+                print("""
+                ５、失敗しました。
+                REASON: %s""" % result)
+
+            else:
+                print("""
+                ５、成功しました。
+                接続を切断します。""")
+                
 
         # 結果表示
         errorcode =1
@@ -73,6 +123,11 @@ class RegistrationRoot(BoxLayout):
             self.openPopup('Error', '正しい形式の秘密鍵ではありません。\n空白などが混在していませんか？')
         elif errorcode == 2:
             self.openPopup('エラー ', '正しい形式のハッシュではありません。\n空白などが混在していませんか？')
+        elif errorcode == 3:
+            self.openPopup('エラー ', e)
+        elif errorcode == 4:
+            self.openPopup('失敗しました ', result)
+
         else:
             self.openPopup('エラー ', 'そのほか')
         
@@ -109,4 +164,4 @@ def main():
 
 
 if __name__ == '__main__':
-	main()
+    main()
