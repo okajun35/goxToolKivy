@@ -1,7 +1,7 @@
 #!/user/env python3
 # -*- coding: utf-8 -*-
 
-#from ed25519 import Ed25519
+from ed25519 import Ed25519
 import websocket
 import threading
 import queue
