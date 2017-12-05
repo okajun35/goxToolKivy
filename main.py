@@ -43,8 +43,8 @@ class RegistrationRoot(BoxLayout):
     
         popup = MyPopup()
         
-        #popup.title = input_title
-        popup.message_output.text = input_text
+        popup.title = input_title
+        popup.message_output.text = str(input_text)
 
         # ポップアップ表示
         popup.open()
@@ -68,32 +68,41 @@ class RegistrationRoot(BoxLayout):
         # 処理部
         ws = WebSocketClient(url="ws://153.122.86.46:8088")
 
+        output_maseege = ''
+
         ws.start()
-        ws.login_by_pin_guest(screen = self.ws)
+        try:
+            ws.login_by_pin_guest(screen = self.ws)
+        except Exception as e:
+            print("Error:%s" % e)
+            output_maseege = e
+            errorcode = 3
         
-        
-        sec_ley = sec_ley.lower().lstrip().rstrip()
-        if len(sec_ley) != 64:
-            #print("Error:正しい形式の秘密鍵ではありません。空白などが混在していませんか？")
-            errorcode = 1
+        print(" make secret key ")
+        if(errorcode == 0):
+            self.sec_ley = sec_ley.lower().lstrip().rstrip()
+            if len(self.sec_ley) != 64:
+                #print("Error:正しい形式の秘密鍵ではありません。空白などが混在していませんか？")
+                errorcode = 1
 
         if(errorcode == 0):
             try:
-                int(sec_ley, 16)
+                int(self.sec_ley, 16)
             except Exception as e:
                 #print("Error:%s" % e)
                 errorcode = 3
+                output_maseege = e
 
 
         if(errorcode == 0):
             print("４、署名を作成します。")
-            message = ws.user_code + tx_hash
+            message = ws.user_code + self.tx_hash
             ecc = Ed25519()
-            pub_key = ecc.public_key(sk=sec_ley).decode()
-            sign = Ed25519.sign(message=message, secret_key=sec_ley, public_key=pub_key).decode()
+            pub_key = ecc.public_key(sk=self.sec_ley).decode()
+            sign = Ed25519.sign(message=message, secret_key=self.sec_ley, public_key=pub_key).decode()
 
             print("４、秘密鍵を削除します。")
-            del sec_ley
+            del self.sec_ley
             del ecc
 
             data = {
@@ -115,8 +124,6 @@ class RegistrationRoot(BoxLayout):
                 
 
         # 結果表示
-        errorcode =1
-        
         if errorcode == 0:
             self.openPopup('成功', '成功しました。\n接続を切断します。')
         elif errorcode == 1:
@@ -124,7 +131,7 @@ class RegistrationRoot(BoxLayout):
         elif errorcode == 2:
             self.openPopup('エラー ', '正しい形式のハッシュではありません。\n空白などが混在していませんか？')
         elif errorcode == 3:
-            self.openPopup('エラー ', e)
+            self.openPopup('エラー ', output_maseege)
         elif errorcode == 4:
             self.openPopup('失敗しました ', result)
 
