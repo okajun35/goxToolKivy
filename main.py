@@ -65,18 +65,29 @@ class RegistrationRoot(BoxLayout):
         self.tx_hash = self.hush_exam.text
         print(self.tx_hash)
 
-        # 処理部
-        ws = WebSocketClient(url="ws://153.122.86.46:8088")
+        if self.ws is '':
+            output_maseege = "twitter名が空です"
+            errorcode =3
+        elif self.sec_ley is '':
+            output_maseege = "秘密鍵が空です"
+            errorcode =3
+        elif self.tx_hash is '':
+            output_maseege = "txhashが空です"
+            errorcode =3
 
-        output_maseege = ''
 
-        ws.start()
-        try:
-            ws.login_by_pin_guest(screen = self.ws)
-        except Exception as e:
-            print("Error:%s" % e)
-            output_maseege = e
-            errorcode = 3
+        if(errorcode == 0):
+            # 処理部
+            ws = WebSocketClient(url="ws://153.122.86.46:8088")
+
+            output_maseege = ''
+            ws.start()
+            try:
+                ws.login_by_pin_guest(screen = self.ws)
+            except Exception as e:
+                print("Error:%s" % e)
+                output_maseege = e
+                errorcode = 3
         
         print(" make secret key ")
         if(errorcode == 0):
@@ -166,9 +177,8 @@ def resourcePath():
     return os.path.join(os.path.abspath("."))
 
 def main():
-    resource_add_path(resourcePath())
-    GoxToolApp().run()
-
+   resource_add_path(resourcePath())
+   GoxToolApp().run()
 
 if __name__ == '__main__':
     main()
