@@ -5,8 +5,8 @@ from kivy.config import Config
 Config.set('graphics', 'height', '760')
 
 
-import sys
-import os
+#import sys
+#import os
 from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
 from kivy.properties import ObjectProperty, ListProperty
@@ -33,7 +33,6 @@ class RegistrationRoot(BoxLayout):
     tx_hash = ''
 
     def __init__(self, **kwargs):
-
         super(RegistrationRoot, self).__init__(**kwargs)
         
 
@@ -91,7 +90,7 @@ class RegistrationRoot(BoxLayout):
         
         print(" make secret key ")
         if(errorcode == 0):
-            self.sec_ley = sec_ley.lower().lstrip().rstrip()
+            self.sec_ley = self.sec_ley.lower().lstrip().rstrip()
             if len(self.sec_ley) != 64:
                 #print("Error:正しい形式の秘密鍵ではありません。空白などが混在していませんか？")
                 errorcode = 1
@@ -117,7 +116,7 @@ class RegistrationRoot(BoxLayout):
             del ecc
 
             data = {
-                'txhash': tx_hash,
+                'txhash': self.tx_hash,
                 'sign': sign,
                 'pubkey': pub_key
             }
@@ -160,25 +159,26 @@ class RegistrationRoot(BoxLayout):
 
 
 
-class GoxToolApp(App):
+class GoxtoolApp(App):
 
     def __init__(self, **kwargs):
-        super(GoxToolApp, self).__init__(**kwargs)
+        super(GoxtoolApp, self).__init__(**kwargs)
 
         self.title = '送金GOX対応ツール'
     pass
 
 
-def resourcePath():
-    '''Returns path containing content - either locally or in pyinstaller tmp file'''
-    if hasattr(sys, '_MEIPASS'):
-        return os.path.join(sys._MEIPASS)
+#def resourcePath():
+#    '''Returns path containing content - either locally or in pyinstaller tmp file'''
+#    if hasattr(sys, '_MEIPASS'):
+#        return os.path.join(sys._MEIPASS)
 
-    return os.path.join(os.path.abspath("."))
+#    return os.path.join(os.path.abspath("."))
 
-def main():
-   resource_add_path(resourcePath())
-   GoxToolApp().run()
+#def main():
+#   resource_add_path(resourcePath())
+#   GoxtoolApp().run()
 
 if __name__ == '__main__':
-    main()
+#    main()
+    GoxtoolApp().run()
