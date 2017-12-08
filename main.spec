@@ -1,10 +1,11 @@
 # -*- mode: python -*-
-
-block_cipher = None
 from kivy.deps import sdl2, glew
 
+block_cipher = None
+
+
 a = Analysis(['main.py'],
-             pathex=['C:\\Users\\hddwm\\OneDrive\\ÉhÉLÉÖÉÅÉìÉg\\GitHub\\goxToolKivy'],
+             pathex=['.\\goxToolKivy'],
              binaries=[],
              datas=[],
              hiddenimports=[],
@@ -14,6 +15,12 @@ a = Analysis(['main.py'],
              win_no_prefer_redirects=False,
              win_private_assemblies=False,
              cipher=block_cipher)
+
+a.datas+=[('goxtool.kv','.\\goxtool.kv',"DATA")]
+a.datas+=[('mplus-2c-regular.ttf','.\\mplus-2c-regular.ttf',"DATA")]
+
+
+
 pyz = PYZ(a.pure, a.zipped_data,
              cipher=block_cipher)
 exe = EXE(pyz,
@@ -23,7 +30,7 @@ exe = EXE(pyz,
           debug=False,
           strip=False,
           upx=True,
-          console=True )
+          console=True , icon='icon.ico')
 coll = COLLECT(exe,
                a.binaries,
                a.zipfiles,
@@ -31,6 +38,4 @@ coll = COLLECT(exe,
                *[Tree(p) for p in (sdl2.dep_bins + glew.dep_bins)],
                strip=False,
                upx=True,
-               name='GoxTool')
-               
- 
+               name='main')

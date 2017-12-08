@@ -19,3 +19,5 @@ build/test/warntest.txt
 build/test/xref-test.html
 dist/test/
 build/test/test.exe.manifest
+test.spec
+test.spec

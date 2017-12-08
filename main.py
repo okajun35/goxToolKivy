@@ -5,8 +5,8 @@ from kivy.config import Config
 Config.set('graphics', 'height', '760')
 
 
-#import sys
-#import os
+import sys
+import os
 from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
 from kivy.properties import ObjectProperty, ListProperty
@@ -20,7 +20,6 @@ from ed25519 import Ed25519
 
 # デフォルトに使用するフォントを変更する
 resource_add_path('./fonts')
-#resource_add_path('/storage/emulated/0/kivy/calc/fonts')
 LabelBase.register(DEFAULT_FONT, 'mplus-2c-regular.ttf') #日本語が使用できるように日本語フォントを指定する
 
 
@@ -168,17 +167,17 @@ class GoxtoolApp(App):
     pass
 
 
-#def resourcePath():
-#    '''Returns path containing content - either locally or in pyinstaller tmp file'''
-#    if hasattr(sys, '_MEIPASS'):
-#        return os.path.join(sys._MEIPASS)
+def resourcePath():
+    '''Returns path containing content - either locally or in pyinstaller tmp file'''
+    if hasattr(sys, '_MEIPASS'):
+        return os.path.join(sys._MEIPASS)
 
-#    return os.path.join(os.path.abspath("."))
+    return os.path.join(os.path.abspath("."))
 
-#def main():
-#   resource_add_path(resourcePath())
-#   GoxtoolApp().run()
+def main():
+    resource_add_path(resourcePath())
+    GoxtoolApp().run()
 
 if __name__ == '__main__':
-#    main()
-    GoxtoolApp().run()
+    main()
+#    GoxtoolApp().run()
